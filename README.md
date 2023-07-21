@@ -11,7 +11,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 # How to Install 
 1. First we have to install the node js and npm in our system.
 2. Clone the Repo URL.
-3. Use the master branch
+3. Use the main branch
 4. Go to the Directory
 5. npm install
 6. ng serve
