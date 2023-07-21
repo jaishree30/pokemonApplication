@@ -1,0 +1,32 @@
+<div *ngIf="evolutionChain.length > 0">
+  <div class="evolution-container d-flex align-items-center">
+
+    <ng-container *ngFor="let evolution of evolutionChain; let index = index; let last = last">
+      <div class="evolution-item" [ngClass]="{ 'highlight-card': evolution.id === selectedPokemonId }">
+        <div>
+          <img class="pokemon-image"
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/{{evolution.id}}.svg"
+            alt="{{ evolution.name }}">
+        </div>
+
+        <div class="pokemon-name">
+          {{ evolution.name | titlecase}}
+        </div>
+      </div>
+      <div class="arrow-level col-sm-1" *ngIf="!last">
+        <div class="arrow">&#10148;</div>
+        <div class="level" *ngIf="evolution.level != null">
+           <span> {{evolutionChain[index+1].level==null?'':'Level '+evolutionChain[index+1].level}}</span> 
+        
+        </div>
+      </div>
+      
+    </ng-container>
+   <ng-container>
+    <button class="btn btn-primary mt-3" style="margin-left:10px;position: relative;bottom: 79px;" (click)="goBack()">Back</button>
+
+   </ng-container>
+
+  </div>
+</div>
+
