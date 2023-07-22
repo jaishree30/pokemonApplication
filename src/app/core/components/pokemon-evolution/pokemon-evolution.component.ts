@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import {UserServiceService} from '../../../core/services/user-service.service';
 import { Evolution } from '../../../core/interface/evolution.interface';
 import { Location } from '@angular/common';
+import { Subscription, switchMap } from 'rxjs';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { Location } from '@angular/common';
 export class PokemonEvolutionComponent implements OnInit {
   selectedPokemonId: any;
   evolutionChain: Evolution[] = [];
+  private pokemonEvolutionSubscription: Subscription | undefined;
 
   constructor(private route: ActivatedRoute, private pokemonService: UserServiceService,private location: Location) {}
 
@@ -30,23 +32,22 @@ export class PokemonEvolutionComponent implements OnInit {
   }
 
   getPokemonEvolutionChain(name: string): void {
-    this.pokemonService.getPokemonSpecies(name).subscribe(
-      (response) => {
-        const chainUrl = response.evolution_chain.url;
-        this.pokemonService.getPokemonDetails(chainUrl).subscribe(
-          (evolutionData) => {
-            this.parseEvolutionChain(evolutionData);
-          },
-          (error) => {
-            console.log('Error fetching Pokémon details:', error);
-          }
-        );
+    this.pokemonEvolutionSubscription =   this.pokemonService.getPokemonSpecies(name).pipe(
+      switchMap(
+        (response: any) => {
+          const chainUrl = response.evolution_chain.url;
+          return this.pokemonService.getPokemonDetails(chainUrl)
+        })
+    ).subscribe({
+      next: (evolutionData) => {
+        this.parseEvolutionChain(evolutionData);
       },
-      (error) => {
-        console.log('Error fetching Pokémon evolution chain:', error);
-      }
-    );
+      error: (error) => {
+        console.error('Error fetching Pokémon data:', error);
+      },
+    })
   }
+  
 
   parseEvolutionChain(evolutionData: any): void {
     this.evolutionChain = [];
@@ -67,4 +68,10 @@ export class PokemonEvolutionComponent implements OnInit {
       this.parseChainRecursive(chain.evolves_to[0]);
     }
   }
+  ngOnDestroy() {
+    if (this.pokemonEvolutionSubscription) {
+      this.pokemonEvolutionSubscription.unsubscribe();
+    }
+  }
+
 }

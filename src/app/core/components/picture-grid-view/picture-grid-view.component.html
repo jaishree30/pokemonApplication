@@ -14,7 +14,7 @@
         </mat-grid-list>
       
         <mat-paginator [length]="totalCount" [pageIndex]="currentPage"
-            [pageSize]="itemsPerPage" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true"
+            [pageSize]="itemsPerPage" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="false"
             (page)="onPageChange($event)" aria-label="Select page"></mat-paginator>
      </div>
   </div>
